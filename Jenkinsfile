@@ -1,21 +1,10 @@
 pipeline {
     agent any
 
-    environment {
-        GITHUB_CREDENTIALS_ID = 'DEV_GIT' // ID of GitHub token in Jenkins credentials
-    }
-
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/dev-4-vinay-kumar/jenkins-practice.git',
-                    credentialsId: GITHUB_CREDENTIALS_ID
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
+                git url: 'https://github.com/dev-4-vinay-kumar/jenkins-practice.git'
             }
         }
 
