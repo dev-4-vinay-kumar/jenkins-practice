@@ -27,9 +27,6 @@ pipeline {
     }
 
     post {
-        always {
-            // Optional: Archive test results or clean up workspace
-        }
         success {
             echo 'Tests ran successfully!'
         }
