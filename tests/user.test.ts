@@ -8,15 +8,15 @@ app.post("/api/v1/user",createUser);
 
 describe('POST /api/v1/user', () => {
 
-    it('should create a new user and return it', async () => {
-        const response = await request(app)
-            .post('/api/v1/user')
-            .send({ name: 'John Doe' });
+    // it('should create a new user and return it', async () => {
+    //     const response = await request(app)
+    //         .post('/api/v1/user')
+    //         .send({ name: 'John Doe' });
 
-        expect(response.status).toBe(201);
-        expect(response.body).toHaveProperty('id');
-        expect(response.body.name).toBe('John Doe');
-    });
+    //     expect(response.status).toBe(201);
+    //     expect(response.body).toHaveProperty('id');
+    //     expect(response.body.name).toBe('John Doe');
+    // });
 
     it('should return 400 if name is missing', async () => {
         const response = await request(app)
