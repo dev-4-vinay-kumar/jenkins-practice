@@ -11,6 +11,12 @@ pipeline {
             }
         }
 
+        stage('check files') {
+            steps {
+                sh 'ls'
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 sh 'npm run test-container'
