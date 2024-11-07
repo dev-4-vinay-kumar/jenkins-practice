@@ -20,6 +20,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh 'pwd'
+                sh 'ls'
                 sh 'npm run test-container'
             }
         }
