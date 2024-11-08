@@ -22,6 +22,14 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
+                    sh """
+                        until docker exec ${testAppContainerId} pg_isready -h db -p 5432 -U root > /dev/null 2>&1; do
+                            echo "Waiting for PostgreSQL to be ready..."
+                            sleep 3
+                        done
+                    """
+
+
                     sh "docker cp . ${testAppContainerId}:/app"
 
                     sh "docker exec ${testAppContainerId} npx prisma db push"
