@@ -24,7 +24,7 @@ pipeline {
 
                     sh "docker cp . ${testAppContainerId}:/app"
 
-                    sh "docker exec ${testAppContainerId} npm run test"
+                    sh "docker exec ${testAppContainerId} npx prisma db push && npm run test"
                 }
             }
         }
