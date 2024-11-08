@@ -22,10 +22,15 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
+                    sh "echo ${testAppContainerId}"
+
                     def testAppDbContainerId = sh(
                         script: "docker-compose -f docker-compose.test.yml ps -q db",
                         returnStdout: true
                     ).trim()
+
+                     sh "echo ${testAppDbContainerId}"
+
 
                     sh """
                         until docker exec ${testAppDbContainerId} pg_isready -h db -p 5432 -U root > /dev/null 2>&1; do
