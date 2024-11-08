@@ -24,8 +24,6 @@ pipeline {
 
                     sh "docker cp . ${testAppContainerId}:/app"
 
-                    sh "docker exec ${testAppContainerId} npx prisma db push"
-
                     sh "docker exec ${testAppContainerId} npm run test"
 
                 }
@@ -34,10 +32,8 @@ pipeline {
     }
 
     post {
-        always {
-            sh 'docker-compose -f docker-compose.test.yml down --volumes'
-        }
         success {
+            sh 'docker-compose -f docker-compose.test.yml down --volumes'
             echo 'Tests ran successfully!'
         }
         failure {
