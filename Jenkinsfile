@@ -16,14 +16,6 @@ pipeline {
             steps {
                 script {
                     sh 'npm run test-container'
-
-                    def testAppContainerId = sh(
-                        script: "docker-compose -f docker-compose.test.yml ps -q app",
-                        returnStdout: true
-                    ).trim()
-
-                    sh "docker cp . ${testAppContainerId}:/app"
-
                 }
             }
         }
