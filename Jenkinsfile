@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        TEST_APP_CONTAINER_ID = ''
+    }
+    
     stages {
         stage('Checkout') {
             steps {
@@ -11,17 +15,22 @@ pipeline {
             }
         }
 
-        stage('check files') {
+        stage('setup container for Tests and Run Tests') {
             steps {
-                sh 'ls'
-            }
-        }
+                sh 'docker-compose -f docker-compose.test.yml up -d'
 
-        stage('Run Tests') {
-            steps {
-                sh 'pwd'
-                sh 'ls'
-                sh 'npm run test-container'
+                TEST_APP_CONTAINER_ID = sh(
+                        script: "docker-compose -f docker-compose.test.yml ps -q app",
+                        returnStdout: true
+                    ).trim()
+
+                sh "docker cp . ${TEST_APP_CONTAINER_ID}:/app"
+
+                sh "docker exec ${TEST_APP_CONTAINER_ID} npm run test"
+
+                if(TEST_APP_CONTAINER_ID){
+                    sh 'docker-compose -f docker-compose.test.yml down --volumes'
+                }
             }
         }
     }
