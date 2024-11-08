@@ -1,9 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        TEST_APP_CONTAINER_ID = ''
-    }
     
     stages {
         stage('Checkout') {
@@ -15,27 +12,28 @@ pipeline {
             }
         }
 
-        stage('setup container for Tests and Run Tests') {
+        stage('Setup Container for Tests and Run Tests') {
             steps {
-                sh 'docker-compose -f docker-compose.test.yml up -d'
+                script {
+                    sh 'docker-compose -f docker-compose.test.yml up -d'
 
-                TEST_APP_CONTAINER_ID = sh(
+                    def testAppContainerId = sh(
                         script: "docker-compose -f docker-compose.test.yml ps -q app",
                         returnStdout: true
                     ).trim()
 
-                sh "docker cp . ${TEST_APP_CONTAINER_ID}:/app"
+                    sh "docker cp . ${testAppContainerId}:/app"
 
-                sh "docker exec ${TEST_APP_CONTAINER_ID} npm run test"
-
-                if(TEST_APP_CONTAINER_ID){
-                    sh 'docker-compose -f docker-compose.test.yml down --volumes'
+                    sh "docker exec ${testAppContainerId} npm run test"
                 }
             }
         }
     }
 
     post {
+        always {
+            sh 'docker-compose -f docker-compose.test.yml down --volumes'
+        }
         success {
             echo 'Tests ran successfully!'
         }
