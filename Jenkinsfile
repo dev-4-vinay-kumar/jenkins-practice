@@ -22,8 +22,13 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
+                    def testAppDbContainerId = sh(
+                        script: "docker-compose -f docker-compose.test.yml ps -q db",
+                        returnStdout: true
+                    ).trim()
+
                     sh """
-                        until docker exec ${testAppContainerId} pg_isready -h db -p 5432 -U root > /dev/null 2>&1; do
+                        until docker exec ${testAppDbContainerId} pg_isready -h db -p 5432 -U root > /dev/null 2>&1; do
                             echo "Waiting for PostgreSQL to be ready..."
                             sleep 3
                         done
