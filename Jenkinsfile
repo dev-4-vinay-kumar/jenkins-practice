@@ -37,6 +37,10 @@ pipeline {
                            "-D sonar.host.url=${SONAR_HOST_URL} " +
                            "-D sonar.login=${SONAR_TEST_EXPRESS_APP_TOKEN}"
                     }
+
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
                 }
             }
         }
