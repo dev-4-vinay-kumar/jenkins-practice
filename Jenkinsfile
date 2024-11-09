@@ -30,7 +30,7 @@ pipeline {
                         npx sonar-scanner \
                         -Dsonar.projectKey=my-express-app \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.host.url=http://sonarqube:9000 \
                         -Dsonar.login=$SONAR_TOKEN
                     """
                 }
