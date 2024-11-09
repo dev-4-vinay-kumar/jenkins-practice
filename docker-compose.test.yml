@@ -14,8 +14,8 @@ services:
       - db
     networks:
       - test-network
-    restart: on-failure
-    command: bash -c "sleep 20 && npx prisma db push && npm run test "
+    # restart: on-failure
+    # command: bash -c "sleep 20 && npx prisma db push && npm run test "
 
   db:
     image: postgres:latest
