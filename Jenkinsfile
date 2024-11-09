@@ -1,7 +1,15 @@
 pipeline {
     agent any
 
+    tools {
+        sonarQube 'SonarQubeScanner' // Use the name defined in "Manage Jenkins > Global Tool Configuration"
+    }
+
+
     environment {
+        SONAR_PROJECT_KEY = "test-express-app"
+        SONAR_PROJECT_NAME = "test-express-app"
+        SONAR_HOST_URL = "http://sonarqube:9000" 
         SONAR_TOKEN = credentials('SONAR_TEST_EXPRESS_APP_TOKEN')
     }
     
@@ -23,16 +31,20 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
-                    scannerHome = tool '<SonarQube Scanner>'// must match the name of an actual scanner installation directory on your Jenkins build agent
-                }
-                withSonarQubeEnv('<SonarQube>') {// If you have configured more than one global server connection, you can specify its name as configured in Jenkins
-                sh "${scannerHome}/bin/sonar-scanner"
+                    def scannerHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv('SonarQubeServer') {
+                        sh "${scannerHome}/bin/sonar-scanner " +
+                           "-Dsonar.projectKey=${SONAR_PROJECT_KEY} " +
+                           "-Dsonar.projectName=${SONAR_PROJECT_NAME} " +
+                           "-Dsonar.host.url=${SONAR_HOST_URL} " +
+                           "-Dsonar.login=${SONAR_LOGIN_TOKEN}"
+                    }
                 }
             }
-    }
+        }
 
     }
 
