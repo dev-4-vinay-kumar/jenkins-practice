@@ -71,56 +71,34 @@ export type FilterOptions<T> = {
 export const getPaginatedData = async<T>(
     prismaModel: PrismaModel,
     pagination: PaginationOptions,
-    prismaClient: PrismaClient
+    prismaClient: PrismaClient,
+    searchTerm?: string,
+    filters?: FilterOptions<T>[]
 ): Promise<PaginatedResponse<T>> => {
     const { page, pageSize } = pagination;
     const skip = (page - 1) * pageSize;
-    const totalCount = await (prismaClient[prismaModel] as any).count();
-    const totalPages = Math.ceil(totalCount / pageSize);
+    let searchClause;
+    let filterClause;
 
-    var data = await (prismaClient[prismaModel] as any).findMany({
-        skip,
-        take: pageSize,
-        orderBy: { updatedAt: 'desc' },
-    });
-
-    return {
-        metaData: {
-            totalElements: totalCount,
-            totalPages,
-            page,
-            size: data.length,
-        },
-        data,
-    };
-}
-
-export const getSearchPaginatedData = async<T>(
-    searchTerm: string,
-    prismaModel: PrismaModel,
-    pagination: PaginationOptions,
-    prismaClient: PrismaClient
-): Promise<PaginatedResponse<T>> => {
-    const { page, pageSize } = pagination;
-    const skip = (page - 1) * pageSize;
-
-    const searchClause = buildSearchClause(searchTerm, prismaModel)
+    if (searchTerm) {
+        searchClause = buildSearchClause(searchTerm, prismaModel)
+    }
+    if (filters) {
+        filterClause = buildFilterClause(filters);
+    }
 
     const totalCount = await (prismaClient[prismaModel] as any).count({
         where: {
-            OR: searchClause,
+            OR: searchClause || {},
+            AND: filterClause || {}
         }
     });
-
     const totalPages = Math.ceil(totalCount / pageSize);
 
     var data = await (prismaClient[prismaModel] as any).findMany({
         skip,
         take: pageSize,
         orderBy: { updatedAt: 'desc' },
-        where: {
-            OR: searchClause
-        },
     });
 
     return {
@@ -134,150 +112,26 @@ export const getSearchPaginatedData = async<T>(
     };
 }
 
-export const getFilterPaginatedData = async<T>(
-    prismaModel: PrismaModel,
-    pagination: PaginationOptions,
-    prismaClient: PrismaClient,
-    filters: FilterOptions<T>[]
-): Promise<PaginatedResponse<T>> => {
-    const { page, pageSize } = pagination;
-    const skip = (page - 1) * pageSize;
-
-    const filterClause = buildFilterClause<T>(filters);
-
-    const totalCount = await (prismaClient[prismaModel] as any).count({
-        where: filterClause
-    });
-
-    const totalPages = Math.ceil(totalCount / pageSize);
-
-    var data = await (prismaClient[prismaModel] as any).findMany({
-        skip,
-        take: pageSize,
-        orderBy: { updatedAt: 'desc' },
-        where: filterClause,
-    });
-
-    return {
-        metaData: {
-            totalElements: totalCount,
-            totalPages,
-            page,
-            size: data.length,
-        },
-        data,
-    };
-}
-
-export const getSearchAndFilterPaginatedData = async<T>(
-    prismaModel: PrismaModel,
-    pagination: PaginationOptions,
-    prismaClient: PrismaClient,
-    filters: FilterOptions<T>[],
-    searchterm: string
-): Promise<PaginatedResponse<T>> => {
-    const { page, pageSize } = pagination;
-    const skip = (page - 1) * pageSize;
-
-    const filterClause = buildFilterClause<T>(filters);
-    const searchClause = buildSearchClause(searchterm, prismaModel);
-
-    const totalCount = await (prismaClient[prismaModel] as any).count({
-        where: {
-            OR: searchClause,
-            AND: filterClause
-        }
-    });
-
-    const totalPages = Math.ceil(totalCount / pageSize);
-
-    var data = await (prismaClient[prismaModel] as any).findMany({
-        skip,
-        take: pageSize,
-        orderBy: { updatedAt: 'desc' },
-        where: {
-            OR: searchClause,
-            AND: filterClause
-        }
-    });
-
-    return {
-        metaData: {
-            totalElements: totalCount,
-            totalPages,
-            page,
-            size: data.length,
-        },
-        data,
-    };
-}
-
-export const getData = async <T>(
-    prismaModel: PrismaModel,
-    prismaClient: PrismaClient
-): Promise<PaginatedResponse<T>> => {
-    var data = await (prismaClient[prismaModel] as any).findMany();
-    return {
-        metaData: {
-            totalElements: data.length,
-        },
-        data,
-    };
-}
-
-export const getDataOnSearch = async <T>(
+export const getAllData = async <T>(
     prismaModel: PrismaModel,
     prismaClient: PrismaClient,
-    searchTerm: string
+    filters?: FilterOptions<T>[],
+    searchTerm?: string,
 ): Promise<PaginatedResponse<T>> => {
+    let searchClause;
+    let filterClause;
 
-    const searchClause = buildSearchClause(searchTerm, prismaModel)
+    if (searchTerm) {
+        searchClause = buildSearchClause(searchTerm, prismaModel)
+    }
+    if (filters) {
+        filterClause = buildFilterClause(filters);
+    }
+
     var data = await (prismaClient[prismaModel] as any).findMany({
         where: {
-            OR: searchClause
-        }
-    });
-    return {
-        metaData: {
-            totalElements: data.length,
-        },
-        data,
-    };
-}
-
-export const getDataOnFilter = async <T>(
-    prismaModel: PrismaModel,
-    prismaClient: PrismaClient,
-    filters: FilterOptions<T>[]
-): Promise<PaginatedResponse<T>> => {
-
-    const filterClause = buildFilterClause(filters);
-    var data = await (prismaClient[prismaModel] as any).findMany({
-        where: {
-            AND: filterClause
-        }
-    });
-    return {
-        metaData: {
-            totalElements: data.length,
-        },
-        data,
-    };
-}
-
-export const getDataOnFilterAndSearch = async <T>(
-    prismaModel: PrismaModel,
-    prismaClient: PrismaClient,
-    filters: FilterOptions<T>[],
-    searchTerm: string,
-): Promise<PaginatedResponse<T>> => {
-
-    const filterClause = buildFilterClause(filters);
-    const searchClause = buildSearchClause(searchTerm, prismaModel)
-    var data = await (prismaClient[prismaModel] as any).findMany({
-        where: {
-            AND: filterClause,
-            OR: searchClause
+            AND: filterClause || {},
+            OR: searchClause || {}
         }
     });
     return {

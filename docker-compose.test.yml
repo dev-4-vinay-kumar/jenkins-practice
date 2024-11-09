@@ -2,14 +2,14 @@ version: '3.8'
 services:
   app:
     build:
-      context: /app
+      context: /shared_data
       dockerfile: Dockerfile.test
       args:
         DATABASE_URL: postgresql://root:root@db:5432/dev_plaza?schema=user-mgmt-db
     environment:
       DATABASE_URL: postgresql://root:root@db:5432/dev_plaza?schema=user-mgmt-db
     volumes:
-      - $PWD:/app
+      - ${SHARED_VOLUME}:/shared_data
     depends_on:
       - db
     networks:
@@ -29,3 +29,6 @@ services:
 networks:
   test-network:
     driver: bridge
+
+volumes:
+  ${SHARED_VOLUME}:

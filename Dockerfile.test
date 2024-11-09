@@ -1,14 +1,20 @@
-# Use the official Node.js 18 image as the base
+# Use a base image (e.g., Node.js for a Node app, or any other relevant base image)
 FROM node:18
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files
-COPY package*.json ./
+# Copy files from the shared volume into the container's working directory
+COPY /shared_data /app
 
-# Install dependencies
+# Install dependencies if you have a package.json file
 RUN npm install
 
-# Copy the rest of the application code
-COPY . .
+# Build the application if necessary (e.g., for frontend applications)
+# RUN npm run build
+
+# Expose the port your application runs on (adjust as necessary)
+EXPOSE 3000
+
+# Command to run the application
+CMD ["npm", "start"]
