@@ -1,6 +1,9 @@
 # Use the official Node.js 18 image as the base
 FROM node:18
 
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
 # Set the working directory inside the container
 WORKDIR /
 
