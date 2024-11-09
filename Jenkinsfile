@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        SonarQubeScanner 'sonarQubeScanner' // Use the name defined in "Manage Jenkins > Global Tool Configuration"
-    }
-
-
     environment {
         SONAR_PROJECT_KEY = "test-express-app"
         SONAR_PROJECT_NAME = "test-express-app"
@@ -34,13 +29,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'sonarQubeScanner'
-                    withSonarQubeEnv('SonarQubeServer') {
+                    def scannerHome = tool 'sonarqube'
+                    withSonarQubeEnv('sonarqube') {
                         sh "${scannerHome}/bin/sonar-scanner " +
-                           "-Dsonar.projectKey=${SONAR_PROJECT_KEY} " +
-                           "-Dsonar.projectName=${SONAR_PROJECT_NAME} " +
-                           "-Dsonar.host.url=${SONAR_HOST_URL} " +
-                           "-Dsonar.login=${SONAR_LOGIN_TOKEN}"
+                           "-D sonar.projectKey=${SONAR_PROJECT_KEY} " +
+                           "-D sonar.projectName=${SONAR_PROJECT_NAME} " +
+                           "-D sonar.host.url=${SONAR_HOST_URL} " +
+                           "-D sonar.login=${SONAR_LOGIN_TOKEN}"
                     }
                 }
             }
