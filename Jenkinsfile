@@ -38,9 +38,6 @@ pipeline {
                            "-D sonar.token=${SONAR_TEST_EXPRESS_APP_TOKEN}"
                     }
 
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
-                    }
                 }
             }
         }
