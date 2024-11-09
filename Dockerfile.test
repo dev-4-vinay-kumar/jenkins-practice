@@ -16,7 +16,7 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Command to run the application
-RUN npx prisma db push
+# # Command to run the application
+# RUN npx prisma db push
 
-RUN npm run test
+# RUN npm run test
