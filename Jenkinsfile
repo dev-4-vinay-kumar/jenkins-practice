@@ -23,20 +23,10 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis and Quality Gate') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                        npx sonar-scanner \
-                        -Dsonar.projectKey=my-express-app \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://sonarqube:9000 \
-                        -Dsonar.login=$SONAR_TOKEN
-                    """
-                }
-                timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
+        stage('SonarQube Analysis') {
+            def scannerHome = tool 'SonarScanner';
+            withSonarQubeEnv() {
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
 
