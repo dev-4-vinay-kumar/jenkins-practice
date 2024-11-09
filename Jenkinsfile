@@ -33,7 +33,7 @@ pipeline {
         }
         cleanup {
             script {
-                sh "docker-compose -f docker-compose.test.yml down --volumes --remove-orphans || true"                
+                sh "docker-compose -f docker-compose.test.yml down --volumes --rmi all --remove-orphans || true"                
             }
         }
 
