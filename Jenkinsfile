@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SHARED_VOLUME = "shared_volume"
+        SONAR_TOKEN = credentials('SONAR_TEST_EXPRESS_APP_TOKEN')
     }
     
     stages {
@@ -22,6 +22,24 @@ pipeline {
                 }
             }
         }
+
+        stage('SonarQube Analysis and Quality Gate') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                        npx sonar-scanner \
+                        -Dsonar.projectKey=my-express-app \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=$SONAR_TOKEN
+                    """
+                }
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
     }
 
     post {
