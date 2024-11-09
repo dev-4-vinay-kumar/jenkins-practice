@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        SonarQubeScanner 'SonarQubeScanner' // Use the name defined in "Manage Jenkins > Global Tool Configuration"
+        SonarQubeScanner 'sonarQubeScanner' // Use the name defined in "Manage Jenkins > Global Tool Configuration"
     }
 
 
@@ -34,7 +34,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQubeScanner'
+                    def scannerHome = tool 'sonarQubeScanner'
                     withSonarQubeEnv('SonarQubeServer') {
                         sh "${scannerHome}/bin/sonar-scanner " +
                            "-Dsonar.projectKey=${SONAR_PROJECT_KEY} " +
