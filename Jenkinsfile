@@ -5,7 +5,7 @@ pipeline {
         SONAR_PROJECT_KEY = "test-express-app"
         SONAR_PROJECT_NAME = "test-express-app"
         SONAR_HOST_URL = "http://sonarqube:9000" 
-        SONAR_TOKEN = credentials('SONAR_TEST_EXPRESS_APP_TOKEN')
+        SONAR_TEST_EXPRESS_APP_TOKEN = credentials('SONAR_TEST_EXPRESS_APP_TOKEN')
     }
     
     stages {
@@ -35,7 +35,7 @@ pipeline {
                            "-D sonar.projectKey=${SONAR_PROJECT_KEY} " +
                            "-D sonar.projectName=${SONAR_PROJECT_NAME} " +
                            "-D sonar.host.url=${SONAR_HOST_URL} " +
-                           "-D sonar.login=${SONAR_LOGIN_TOKEN}"
+                           "-D sonar.login=${SONAR_TEST_EXPRESS_APP_TOKEN}"
                     }
                 }
             }
