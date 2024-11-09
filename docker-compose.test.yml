@@ -9,7 +9,7 @@ services:
     environment:
       DATABASE_URL: postgresql://root:root@db:5432/dev_plaza?schema=user-mgmt-db
     volumes:
-      - $PWD:/app
+      - .:/app
     depends_on:
       - db
     networks:
