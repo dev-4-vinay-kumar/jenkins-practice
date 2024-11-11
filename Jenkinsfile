@@ -38,8 +38,8 @@ pipeline {
                            "-D sonar.token=${SONAR_TEST_EXPRESS_APP_TOKEN}"
                     }
 
-                    timeout(time: 2, unit: 'MINUTES') {  // Optional: add timeout to avoid hanging
-                        def qg = waitForQualityGate() // Wait for analysis report
+                    timeout(time: 5, unit: 'MINUTES') {  // Optional: add timeout to avoid hanging
+                        def qg = waitForQualityGate(allowMissing: false, abortPipeline: true, delay: 10) // Wait for analysis report
                         if (qg.status != 'OK') {      // Check if quality gate passed
                             error "Quality gate failed: ${qg.status}"
                         }
