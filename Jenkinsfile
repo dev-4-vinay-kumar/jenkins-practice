@@ -13,7 +13,7 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM',
                           branches: [[name: 'main']],
-                          userRemoteConfigs: [[url: 'https://github.com/dev-4-vinay-kumar/jenkins-practice.git']]
+                          userRemoteConfigs: [[url: 'https://github.com/devpoc4kmss/devplaza-poc.git', credentialsId: 'DEV_PLAZA_GIT_PAT']],
                 ])
             }
         }
@@ -36,6 +36,13 @@ pipeline {
                            "-D sonar.projectName=${SONAR_PROJECT_NAME} " +
                            "-D sonar.host.url=${SONAR_HOST_URL} " +
                            "-D sonar.token=${SONAR_TEST_EXPRESS_APP_TOKEN}"
+                    }
+
+                    timeout(time: 2, unit: 'MINUTES') {  // Optional: add timeout to avoid hanging
+                        def qg = waitForQualityGate() // Wait for analysis report
+                        if (qg.status != 'OK') {      // Check if quality gate passed
+                            error "Quality gate failed: ${qg.status}"
+                        }
                     }
 
                 }
