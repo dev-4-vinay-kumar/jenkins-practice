@@ -13,7 +13,7 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM',
                           branches: [[name: 'main']],
-                          userRemoteConfigs: [[url: 'https://github.com/devpoc4kmss/devplaza-poc.git', credentialsId: 'DEV_PLAZA_GIT_PAT']],
+                          userRemoteConfigs: [[url: 'https://github.com/dev-4-vinay-kumar/jenkins-practice.git', credentialsId: 'DEV_PLAZA_GIT_PAT']],
                 ])
             }
         }
