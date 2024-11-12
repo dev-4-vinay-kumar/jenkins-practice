@@ -147,7 +147,9 @@ export const createRecord = async <T>(
     prismaClient: PrismaClient,
     data: T
 ): Promise<T> => {
-    const result = await (prismaClient[prismaModel] as any).create(data);
+    const result = await (prismaClient[prismaModel] as any).create({
+        data:data
+    });
     return result;
 }
 
@@ -163,7 +165,10 @@ export const updateRecord = async <T>(
     if (!existingData) {
         throw error(`record with id ${id} not found.`)
     }
-    const result = await (prismaClient[prismaModel] as any).update(data);
+    const result = await (prismaClient[prismaModel] as any).update({
+        where:{id:id},
+        data:data
+    });
     return result;
 }
 
